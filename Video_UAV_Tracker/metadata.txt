@@ -1,0 +1,40 @@
+# This file contains metadata for your plugin. Since 
+# version 2.0 of QGIS this is the proper way to supply 
+# information about a plugin. The old method of 
+# embedding metadata in __init__.py will 
+# is no longer supported since version 2.0.
+
+# This file should be included when you package your plugin.# Mandatory items:
+
+[general]
+name=Video Uav Tracker
+qgisMinimumVersion=2.99
+qgisMaximumVersion=3.99
+description= Replay a video in sync with a gps track displayed on the map (3d OPTIONS with 'panda3d' module installed)
+version=2.1
+author=Salvatore Agosta
+email=sagost@katamail.com
+
+about= see README file in repository for instructions and details
+
+tracker=https://github.com/sagost/Video_UAV_Tracker-3D/issues
+repository=https://github.com/sagost/Video_UAV_Tracker-3D/
+# End of mandatory metadata
+
+# Recommended items:
+
+# Uncomment the following line and add your changelog:
+# changelog=
+
+# Tags are comma separated with spaces allowed
+tags=python,3D,uav,drone,direct georefencing, video,mosaic,photogrammetry,database,inspection,georeferenced video,rov,thermographic video
+
+homepage=https://github.com/sagost/Video_UAV_Tracker-3D/
+category=Plugins
+icon=icon.png
+# experimental flag
+experimental=False
+
+# deprecated flag (applies to the whole plugin, not just a single version)
+deprecated=False
+
