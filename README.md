@@ -24,6 +24,8 @@ the Free Software Foundation; either version 2 of the License, or
 
 INSTRUCTION:
 
+ATTENTION: 3D IS NOT TESTED ON WINDOWS PLATFORM
+- Pixel value query need a .npz archive containing one array data for every frame, it must be named as 'VideoFile.npz' and be in the same folder of 'VideoFile.mp4'
 - for 3d options install numpy,panda3d and pypng python3 modules
 - Download all files from https://github.com/sagost/Video_UAV_Tracker-3D/Video_UAV_Tracker/FFMPEG and copy them in your Video_Uav_Tracker/FFMPEG folder
 
@@ -47,6 +49,6 @@ Replay:
 
 GPX FIELDS for 3D OPTION:
 
--'course' or 'yaw' for HEADING
--'pitch' for PITCH
--'roll' for ROLL
+- 'course' or 'yaw' for HEADING
+- 'pitch' for PITCH
+- 'roll' for ROLL
