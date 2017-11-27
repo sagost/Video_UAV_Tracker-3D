@@ -49,6 +49,6 @@ Replay:
 
 GPX FIELDS for 3D OPTION:
 
--'course' or 'yaw' for HEADING
--'pitch' for PITCH
--'roll' for ROLL
+- 'course' or 'yaw' for HEADING
+- 'pitch' for PITCH
+- 'roll' for ROLL
