@@ -1,5 +1,5 @@
 # Video Uav Tracker 3D
-A  Qgis > 2.99  plugin, synch and display on map a video with a gps track. Fill Geographic Database with information and snapshot. Extract video frame with associated UTM coordinates for rapid photogrammetry use .
+A  Qgis >= 2.99  plugin, synch and display on map a video with a gps track. Fill Geographic Database with information and snapshot. Extract video frame with associated UTM coordinates for rapid photogrammetry use .
 
 
 
