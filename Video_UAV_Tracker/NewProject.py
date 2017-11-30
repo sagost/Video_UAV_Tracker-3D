@@ -112,8 +112,6 @@ class NewProject(QtWidgets.QWidget, Ui_NewProject):
         if os.name == 'nt':
             self.toolButton_4.setEnabled(False)
 
-
-
     def Setup3DParameterer(self):
         treDOptions = Setup3D(QgsProject)
         a = treDOptions.exec_()
@@ -443,11 +441,11 @@ class NewProject(QtWidgets.QWidget, Ui_NewProject):
     
     def ForwardFrame(self):  
         position = self.player.position()
-        self.player.setPosition(position+int(self.fps))
+        self.player.setPosition(position+round(self.fps))
     
     def BackwardFrame(self):
         position = self.player.position()
-        self.player.setPosition(position-int(self.fps))
+        self.player.setPosition(position-round(self.fps))
 
     def ManageDB(self):
         self.player.pause()

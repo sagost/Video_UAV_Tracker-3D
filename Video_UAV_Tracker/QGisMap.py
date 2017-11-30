@@ -295,14 +295,14 @@ class QGisMap(QtWidgets.QWidget, Ui_Form):
 
     def SendPlayData(self,time,start):
         myPyDatagram = PyDatagram()
-        start = (start - self.StartMsecond) /1000
+        start = start  /1000
         myPyDatagram.addUint8(1)
         myPyDatagram.addString(str(time)+','+str(start))
         self.cWriter.send(myPyDatagram, self.myConnection)
 
     def SendPauseData(self,start):
         myPyDatagram = PyDatagram()
-        start = (start - self.StartMsecond) / 1000
+        start = start  / 1000
         myPyDatagram.addUint8(2)
         myPyDatagram.addString(str(start))
         self.cWriter.send(myPyDatagram, self.myConnection)
@@ -417,10 +417,24 @@ class QGisMap(QtWidgets.QWidget, Ui_Form):
         else:
             if self.player.state() == QMediaPlayer.PlayingState:
                 StartTime = time.time() + 0.2
-                self.SendPlayData(StartTime, position+self.StartMsecond)
+                self.SendPlayData(StartTime, position)
                 while time.time() < StartTime:
                     pass
                 self.player.setPosition(position + self.StartMsecond)
+            else:
+                self.SendPauseData(position)
+                self.player.setPosition(position + self.StartMsecond)
+
+    def setPositionFrame(self,position):
+        if not self.Tridimensional:
+            self.player.setPosition(position)
+        else:
+            if self.player.state() == QMediaPlayer.PlayingState:
+                StartTime = time.time() + 0.2
+                self.SendPlayData(StartTime, position)
+                while time.time() < StartTime:
+                    pass
+                self.player.setPosition(position)
             else:
                 self.SendPauseData(position + self.StartMsecond)
                 self.player.setPosition(position + self.StartMsecond)
@@ -528,19 +542,20 @@ class QGisMap(QtWidgets.QWidget, Ui_Form):
     
     def SkipForward(self):
         position = self.player.position()
-        self.setPosition(position+1000)
+        self.setPositionFrame(position+1000)
        
     def SkipBackward(self): 
         position = self.player.position()
-        self.setPosition(position - 1000)
+        self.setPositionFrame(position - 1000)
 
     def ForwardFrame(self):  
         position = self.player.position()
-        self.setPosition(position+(1/self.fps*1000))
+        print(position,round((1/self.fps)*1000), position+round((1/self.fps)*1000)  )
+        self.setPositionFrame(position+round((1/self.fps)*1000))
 
     def BackwardFrame(self):
         position = self.player.position()
-        self.setPosition(position - (1/self.fps*1000))
+        self.setPositionFrame(position - round((1/self.fps)*1000))
      
     def PlayPause(self):
         if self.player.state() == QMediaPlayer.PlayingState:
