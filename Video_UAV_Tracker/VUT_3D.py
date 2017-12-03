@@ -129,7 +129,7 @@ class Video_UAV_Tracker_3D(ShowBase):
     def RayTrace(self,ScreenPoint):
         pFrom = Point3()
         pTo = Point3()
-        base.cam.node().getLens().extrude(ScreenPoint, pFrom, pTo)
+        self.cam.node().getLens().extrude(ScreenPoint, pFrom, pTo)
 
         pFrom = self.render.getRelativePoint(self.cam, pFrom)
         pTo = self.render.getRelativePoint(self.cam, pTo)
