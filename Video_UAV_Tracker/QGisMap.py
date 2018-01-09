@@ -834,8 +834,8 @@ class QGisMap(QtWidgets.QWidget, Ui_Form):
         self.ExtractFromA = round((self.player.position()- self.StartMsecond )/1000)
         canvas = self.Main.iface.mapCanvas()
         crsSrc = QgsCoordinateReferenceSystem(4326)    # .gpx is in WGS 84
-        crsDest = QgsProject.instance().crs()
-        xform = QgsCoordinateTransform(crsSrc, crsDest)
+        crsDest = canvas.mapSettings().destinationCrs()
+        xform = QgsCoordinateTransform(crsSrc, crsDest, QgsProject.instance())
         latitude,longitude = self.Polyline[self.ExtractFromA].y(), self.Polyline[self.ExtractFromA].x()
         self.ExtractAVertex = QgsVertexMarker(canvas)
         self.ExtractAVertex.setCenter(xform.transform(QgsPointXY(longitude, latitude)))
@@ -858,8 +858,8 @@ class QGisMap(QtWidgets.QWidget, Ui_Form):
             if self.ExtractToB > self.ExtractFromA:
                 canvas = self.Main.iface.mapCanvas()
                 crsSrc = QgsCoordinateReferenceSystem(4326)    # .gpx is in WGS 84
-                crsDest = QgsProject.instance().crs()
-                xform = QgsCoordinateTransform(crsSrc, crsDest)   
+                crsDest = canvas.mapSettings().destinationCrs()
+                xform = QgsCoordinateTransform(crsSrc, crsDest, QgsProject.instance())   
                 latitude,longitude = self.Polyline[self.ExtractToB].y(), self.Polyline[self.ExtractToB].x()
                 self.ExtractBVertex = QgsVertexMarker(canvas)
                 self.ExtractBVertex.setCenter(xform.transform(QgsPointXY(longitude, latitude)))
