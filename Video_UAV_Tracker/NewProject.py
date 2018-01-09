@@ -277,7 +277,7 @@ class NewProject(QtWidgets.QWidget, Ui_NewProject):
                     self.LoadVideo(self.videofile)
                     self.replayPosition_label.setText( "-:- / -:-")
         else:
-            ret = QMessageBox.warning(self, "Warning", 'missing ffprobe binaries, please download it from https://github.com/sagost/VideoUavTracker/blob/master/FFMPEG/'+versione+' and paste it in /.qgis3/python/plugins/Video_UAV_Tracker/FFMPEG/ ', QMessageBox.Ok)
+            ret = QMessageBox.warning(self, "Warning", 'missing ffprobe binaries, please download it from https://github.com/sagost/Video_UAV_Tracker-3D/tree/master/Video_UAV_Tracker/FFMPEG'+versione+' and paste it in /.qgis3/python/plugins/Video_UAV_Tracker/FFMPEG/ ', QMessageBox.Ok)
             self.close()
             
     def ParseGpx(self,GPXfile):
