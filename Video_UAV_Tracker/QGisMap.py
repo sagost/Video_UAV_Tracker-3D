@@ -503,12 +503,18 @@ class QGisMap(QtWidgets.QWidget, Ui_Form):
         Point = QgsPointXY(Lon, Lat)
         canvas = self.Main.iface.mapCanvas()
         crsSrc = QgsCoordinateReferenceSystem(4326)    # .gpx is in WGS 84
-        crsDest = QgsProject.instance().crs()
-        xform = QgsCoordinateTransform(crsSrc, crsDest)
+        crsDest = canvas.mapSettings().destinationCrs()
+        xform = QgsCoordinateTransform(crsSrc, crsDest, QgsProject.instance())
         self.positionMarker.setHasPosition(True)
         PointTrans = xform.transform(Point)
         self.positionMarker.newCoords(PointTrans)
         self.positionMarker.angle = Course
+        self.Main.label_14.setText('GPS Time: ' + str(time))
+        self.Main.label_15.setText('Course: ' + "%.2f" % (Course))
+        self.Main.label_16.setText('Ele: ' + "%.2f" % (Ele))
+        self.Main.label_17.setText('Speed m/s: ' + "%.2f" % (Speed))
+        self.Main.label_19.setText('Lat : ' + "%.6f" % (Lat))
+        self.Main.label_18.setText('Lon : ' + "%.6f" % (Lon))
         extent = canvas.extent() 
         boundaryExtent=QgsRectangle(extent)
         boundaryExtent.scale(0.7)
@@ -520,14 +526,8 @@ class QGisMap(QtWidgets.QWidget, Ui_Form):
                         extentCenter.x()+extent.width()/2,
                         extentCenter.y()+extent.height()/2
                         )
-            self.Main.iface.mapCanvas().setExtent(newExtent)
-            self.Main.iface.mapCanvas().refresh()
-        self.Main.label_14.setText('GPS Time: '+str(time))
-        self.Main.label_15.setText('Course: '+"%.2f" % (Course))
-        self.Main.label_16.setText('Ele: '+"%.2f" %(Ele))
-        self.Main.label_17.setText('Speed m/s: '+"%.2f" %(Speed))
-        self.Main.label_19.setText('Lat : '+"%.6f" %(Lat))
-        self.Main.label_18.setText('Lon : '+"%.6f" %(Lon))
+            canvas.setExtent(newExtent)
+            canvas.refresh()
                   
     def MuteUnmute(self):
         if self.player.mediaStatus() == 6 :
