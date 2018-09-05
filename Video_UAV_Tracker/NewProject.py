@@ -428,8 +428,9 @@ class NewProject(QtWidgets.QWidget, Ui_NewProject):
             elif str(l).startswith("height"):
                 self.VideoHeight = str(l).split('=')[1]
             elif str(l).startswith("r_frame_rate"):
-                fps = float(str(l).split('=')[1].split('/')[0] ) / float(str(l).split('=')[1].split('/')[1] )
-                return fps
+               if str(l).split('=')[1] != '0/0'
+                    fps = float(str(l).split('=')[1].split('/')[0] ) / float(str(l).split('=')[1].split('/')[1] )
+                    return fps
 
     def SkipForward(self): 
         position = self.player.position()
