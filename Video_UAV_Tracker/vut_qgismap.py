@@ -39,9 +39,30 @@ Replay:
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtMultimediaWidgets import QVideoWidget
+from PyQt5.QtGui import QKeySequence
 
 import resources
 
+class Scroller(QtWidgets.QScrollArea):
+    def __init__(self):
+        QtWidgets.QScrollArea.__init__(self)
+        self._oldPos = None
+    def wheelEvent(self,ev):
+        if ev.type() == QtCore.QEvent.Wheel:
+            ev.ignore()
+#     def mouseMoveEvent(self, event):
+#
+#         if event.buttons() != Qt.LeftButton:
+#             self._oldpos = event.pos()
+#
+#         if event.buttons() & Qt.LeftButton:
+#             if self._oldpos is not None:
+#              delta = event.pos() - self._oldpos
+#              print('delta: ', delta.x, delta.y)
+#              self.setVerticalScrollBar()
+#              self.setHorizontalScrollBar()
+             
+             
 
 class Ui_Form(object):
     def setupUi(self, Form):
@@ -126,7 +147,20 @@ class Ui_Form(object):
         self.video_frame.setMinimumSize(QtCore.QSize(200, 200))
         self.video_frame.setStyleSheet("background-color: rgb(0, 0, 0);")
         self.video_frame.setObjectName("video_frame")
-        self.verticalLayout.addWidget(self.video_frame)
+        
+        self.scroll = Scroller()
+        self.scroll.setMinimumSize(QtCore.QSize(200, 200))
+        self.scroll.setSizePolicy(sizePolicy)
+        self.scroll.setObjectName("scroll_frame")
+        self.scroll.setWidget(self.video_frame)
+        self.scroll.setAlignment(QtCore.Qt.AlignCenter)
+        
+        self.video_frame.resize(self.scroll.size())
+    
+        self.verticalLayout.addWidget(self.scroll)
+        
+        # self.verticalLayout.addWidget(self.video_frame)
+        
         self.horizontalSlider = QtWidgets.QSlider(self.dockWidgetContents_7)
         self.horizontalSlider.setOrientation(QtCore.Qt.Horizontal)
         self.horizontalSlider.setObjectName("horizontalSlider")
@@ -135,12 +169,24 @@ class Ui_Form(object):
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
         spacerItem1 = QtWidgets.QSpacerItem(98, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_3.addItem(spacerItem1)
+        
+        #<<<
+        self.toolButton_previous1min = QtWidgets.QToolButton(self.dockWidgetContents_7)
+        icon3 = QtGui.QIcon()
+        icon3.addPixmap(QtGui.QPixmap(":/VgisIcon/mActionArrowLeft.svg"), QtGui.QIcon.Normal, QtGui.QIcon.On)
+        self.toolButton_previous1min.setIcon(icon3)
+        self.toolButton_previous1min.setObjectName("toolButton_previous1min")
+        self.horizontalLayout_3.addWidget(self.toolButton_previous1min)
+        
+        #<<
         self.toolButton_11 = QtWidgets.QToolButton(self.dockWidgetContents_7)
         icon3 = QtGui.QIcon()
         icon3.addPixmap(QtGui.QPixmap(":/VgisIcon/mActionArrowLeft.svg"), QtGui.QIcon.Normal, QtGui.QIcon.On)
         self.toolButton_11.setIcon(icon3)
         self.toolButton_11.setObjectName("toolButton_11")
         self.horizontalLayout_3.addWidget(self.toolButton_11)
+        
+        #<
         self.SkipBacktoolButton_8 = QtWidgets.QToolButton(self.dockWidgetContents_7)
         self.SkipBacktoolButton_8.setStyleSheet("")
         icon4 = QtGui.QIcon()
@@ -148,16 +194,24 @@ class Ui_Form(object):
         self.SkipBacktoolButton_8.setIcon(icon4)
         self.SkipBacktoolButton_8.setObjectName("SkipBacktoolButton_8")
         self.horizontalLayout_3.addWidget(self.SkipBacktoolButton_8)
+        
+        # start/pause
         self.playButton = QtWidgets.QToolButton(self.dockWidgetContents_7)
         self.playButton.setObjectName("playButton")
         self.horizontalLayout_3.addWidget(self.playButton)
+        
+        #mute
         self.muteButton = QtWidgets.QToolButton(self.dockWidgetContents_7)
         self.muteButton.setText("")
         self.muteButton.setObjectName("muteButton")
         self.horizontalLayout_3.addWidget(self.muteButton)
+        
+        #replay
         self.replayPosition_label = QtWidgets.QLabel(self.dockWidgetContents_7)
         self.replayPosition_label.setObjectName("replayPosition_label")
         self.horizontalLayout_3.addWidget(self.replayPosition_label)
+        
+        #>
         self.SkipFortoolButton_9 = QtWidgets.QToolButton(self.dockWidgetContents_7)
         self.SkipFortoolButton_9.setStyleSheet("")
         icon5 = QtGui.QIcon()
@@ -165,12 +219,24 @@ class Ui_Form(object):
         self.SkipFortoolButton_9.setIcon(icon5)
         self.SkipFortoolButton_9.setObjectName("SkipFortoolButton_9")
         self.horizontalLayout_3.addWidget(self.SkipFortoolButton_9)
+
+        
+        #>>
         self.toolButton_12 = QtWidgets.QToolButton(self.dockWidgetContents_7)
         icon6 = QtGui.QIcon()
         icon6.addPixmap(QtGui.QPixmap(":/VgisIcon/mActionArrowRight.svg"), QtGui.QIcon.Normal, QtGui.QIcon.On)
         self.toolButton_12.setIcon(icon6)
         self.toolButton_12.setObjectName("toolButton_12")
         self.horizontalLayout_3.addWidget(self.toolButton_12)
+        
+        #>>>
+        self.toolButton_next1min = QtWidgets.QToolButton(self.dockWidgetContents_7)
+        icon6 = QtGui.QIcon()
+        icon6.addPixmap(QtGui.QPixmap(":/VgisIcon/mActionArrowRight.svg"), QtGui.QIcon.Normal, QtGui.QIcon.On)
+        self.toolButton_next1min.setIcon(icon6)
+        self.toolButton_next1min.setObjectName("toolButton_next1min")
+        self.horizontalLayout_3.addWidget(self.toolButton_next1min)
+        
         spacerItem2 = QtWidgets.QSpacerItem(98, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_3.addItem(spacerItem2)
         self.lcdNumber = QtWidgets.QLCDNumber(self.dockWidgetContents_7)
@@ -241,12 +307,17 @@ class Ui_Form(object):
         self.toolButton_4.setToolTip(_translate("Form", "<html><head/><body><p>Enable extract frames toolbox</p><p><br/></p></body></html>"))
         self.toolButton_4.setText(_translate("Form", "Extract frames"))
         self.toolButton_5.setText(_translate("Form", "Close"))
+        
+        self.toolButton_previous1min.setText(_translate("Form", "<<<"))
         self.toolButton_11.setText(_translate("Form", "<<"))
         self.SkipBacktoolButton_8.setText(_translate("Form", "<"))
         self.playButton.setText(_translate("Form", "> / ||"))
         self.replayPosition_label.setText(_translate("Form", "-:- / -:-"))
         self.SkipFortoolButton_9.setText(_translate("Form", ">"))
         self.toolButton_12.setText(_translate("Form", ">>"))
+        self.toolButton_next1min.setText(_translate("Form", ">>>"))
+        
+        
         self.label.setText(_translate("Form", "Export Frames Tool"))
         self.pushButtonCutA_6.setToolTip(_translate("Form", "<html><head/><body><p>Export from actual Video Frame</p></body></html>"))
         self.pushButtonCutA_6.setText(_translate("Form", "From A"))

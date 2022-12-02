@@ -72,9 +72,20 @@ class Ui_NewProject(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.video_frame_2.sizePolicy().hasHeightForWidth())
         self.video_frame_2.setSizePolicy(sizePolicy)
-        self.video_frame_2.setStyleSheet("background-color: rgb(0, 0, 0);")
+        self.video_frame_2.setStyleSheet("background-color: rgb(0, 0, 10);")
         self.video_frame_2.setObjectName("video_frame_2")
+        
+        # self.scroll = QtWidgets.QScrollArea()#+
+        # self.scroll.setWidget(self.video_frame_2)#+
+        # self.video_frame_2.setGeometry(0,0,736,625)
+        # self.horizontalLayout.addWidget(self.scroll)
+        
         self.horizontalLayout.addWidget(self.video_frame_2)
+
+
+        
+
+        
         self.gridLayout.addLayout(self.horizontalLayout, 0, 0, 1, 16)
         self.horizontalSlider = QtWidgets.QSlider(NewProject)
         self.horizontalSlider.setOrientation(QtCore.Qt.Horizontal)
@@ -109,12 +120,40 @@ class Ui_NewProject(object):
         self.toolButton_3.setIcon(icon1)
         self.toolButton_3.setObjectName("toolButton_3")
         self.gridLayout.addWidget(self.toolButton_3, 3, 11, 1, 1)
+        
+        # <<
+        self.toolButton = QtWidgets.QToolButton(NewProject)
+        icon5 = QtGui.QIcon()
+        icon5.addPixmap(QtGui.QPixmap(":/VgisIcon/mActionAtlasPrev.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.toolButton.setIcon(icon5)
+        self.toolButton.setObjectName("toolButton")
+        self.gridLayout.addWidget(self.toolButton, 3, 6, 1, 1)
+        
+        # >>
         self.toolButton_2 = QtWidgets.QToolButton(NewProject)
         icon2 = QtGui.QIcon()
         icon2.addPixmap(QtGui.QPixmap(":/VgisIcon/mActionAtlasNext.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.toolButton_2.setIcon(icon2)
         self.toolButton_2.setObjectName("toolButton_2")
         self.gridLayout.addWidget(self.toolButton_2, 3, 9, 1, 1)
+        
+        # <<<
+        self.toolButton_6 = QtWidgets.QToolButton(NewProject)
+        icon2 = QtGui.QIcon()
+        icon2.addPixmap(QtGui.QPixmap(":/VgisIcon/mActionAtlasNext.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.toolButton_6.setIcon(icon2)
+        self.toolButton_6.setObjectName("toolButton_6")
+        self.gridLayout.addWidget(self.toolButton_6, 3, 5, 1, 1)
+        
+        # >>>
+        self.toolButton_5 = QtWidgets.QToolButton(NewProject)
+        icon2 = QtGui.QIcon()
+        icon2.addPixmap(QtGui.QPixmap(":/VgisIcon/mActionAtlasNext.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.toolButton_5.setIcon(icon2)
+        self.toolButton_5.setObjectName("toolButton_5")
+        self.gridLayout.addWidget(self.toolButton_5, 3, 10, 1, 1)
+        
+        # >
         self.SkipFortoolButton_8 = QtWidgets.QToolButton(NewProject)
         self.SkipFortoolButton_8.setStyleSheet("")
         icon3 = QtGui.QIcon()
@@ -122,6 +161,7 @@ class Ui_NewProject(object):
         self.SkipFortoolButton_8.setIcon(icon3)
         self.SkipFortoolButton_8.setObjectName("SkipFortoolButton_8")
         self.gridLayout.addWidget(self.SkipFortoolButton_8, 3, 8, 1, 1)
+        
         self.SkipBacktoolButton_7 = QtWidgets.QToolButton(NewProject)
         self.SkipBacktoolButton_7.setStyleSheet("")
         icon4 = QtGui.QIcon()
@@ -129,12 +169,8 @@ class Ui_NewProject(object):
         self.SkipBacktoolButton_7.setIcon(icon4)
         self.SkipBacktoolButton_7.setObjectName("SkipBacktoolButton_7")
         self.gridLayout.addWidget(self.SkipBacktoolButton_7, 3, 7, 1, 1)
-        self.toolButton = QtWidgets.QToolButton(NewProject)
-        icon5 = QtGui.QIcon()
-        icon5.addPixmap(QtGui.QPixmap(":/VgisIcon/mActionAtlasPrev.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.toolButton.setIcon(icon5)
-        self.toolButton.setObjectName("toolButton")
-        self.gridLayout.addWidget(self.toolButton, 3, 6, 1, 1)
+        
+
         self.pushButton = QtWidgets.QPushButton(NewProject)
         self.pushButton.setObjectName("pushButton")
         self.gridLayout.addWidget(self.pushButton, 3, 0, 1, 1)
@@ -159,8 +195,16 @@ class Ui_NewProject(object):
         self.pushButton_2.setText(_translate("NewProject", "Synchronize!"))
         self.toolButton_3.setToolTip(_translate("NewProject", "<html><head/><body><p>Add point shape database to project</p></body></html>"))
         #self.toolButton_3.setText(_translate("NewProject", "DB"))
+       
         self.toolButton_2.setToolTip(_translate("NewProject", "<html><head/><body><p>Next second</p></body></html>"))
         self.toolButton_2.setText(_translate("NewProject", ">>"))
+        
+        self.toolButton_6.setToolTip(_translate("NewProject", "<html><head/><body><p>Previous 1min</p></body></html>"))
+        self.toolButton_6.setText(_translate("NewProject", "<<<"))
+        
+        self.toolButton_5.setToolTip(_translate("NewProject", "<html><head/><body><p>Next 1min</p></body></html>"))
+        self.toolButton_5.setText(_translate("NewProject", ">>>"))
+        
         self.SkipFortoolButton_8.setToolTip(_translate("NewProject", "<html><head/><body><p>Next frame</p></body></html>"))
         self.SkipFortoolButton_8.setText(_translate("NewProject", ">"))
         self.SkipBacktoolButton_7.setToolTip(_translate("NewProject", "<html><head/><body><p>Previous frame</p></body></html>"))

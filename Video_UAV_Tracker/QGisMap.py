@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 '''
 Video Uav Tracker 3D  v 2.1
 
@@ -41,9 +42,9 @@ import time
 from vut_qgismap import Ui_Form
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import QUrl, QSize
-from PyQt5.QtWidgets import QMessageBox , QFileDialog , QStyle, QInputDialog, QLineEdit
+from PyQt5.QtWidgets import QMessageBox , QFileDialog , QStyle, QInputDialog, QLineEdit, QShortcut
 from PyQt5.QtMultimedia import QMediaPlayer,  QMediaContent
-from PyQt5.QtGui import QColor
+from PyQt5.QtGui import QColor,QKeySequence
 from SkipTrackTool import *
 from AddPoint import *
 from CanvasMarkers import PositionMarker
@@ -51,6 +52,9 @@ import os
 import threading
 import sys
 import math
+from PyQt5.uic.Compiler.qtproxies import QtCore
+
+
 
 PACKAGE_PARENT = '..'
 SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
@@ -60,14 +64,13 @@ from osgeo import osr
 from geographiclib.geodesic import Geodesic
 from qgis.core import *
 from qgis.gui import QgsVertexMarker
-
+import numpy
 try:
     from direct.distributed.PyDatagram import PyDatagram
     from panda3d.core import QueuedConnectionManager
     from panda3d.core import QueuedConnectionListener
     from panda3d.core import QueuedConnectionReader
     from panda3d.core import ConnectionWriter
-    import numpy
 except:
     pass
 
@@ -141,12 +144,33 @@ class QGisMap(QtWidgets.QWidget, Ui_Form):
                         self.style().standardIcon(QStyle.SP_MediaPause))
             self.player = QMediaPlayer()
             self.player.setVideoOutput(self.video_frame)
+            
+            #assign ShortCut
             self.playButton.clicked.connect(self.PlayPause)
+            self.playButton.setShortcut(QKeySequence('Space'))
+            
             self.muteButton.clicked.connect(self.MuteUnmute)
-            self.toolButton_11.clicked.connect(self.SkipBackward)
-            self.toolButton_12.clicked.connect(self.SkipForward)
-            self.SkipBacktoolButton_8.clicked.connect(self.BackwardFrame)
-            self.SkipFortoolButton_9.clicked.connect(self.ForwardFrame)
+            
+            
+            self.SkipBacktoolButton_8.clicked.connect(self.SkipBackward_5sec)
+            self.SkipBacktoolButton_8.setShortcut(QKeySequence('Left'))
+            
+            self.SkipFortoolButton_9.clicked.connect(self.SkipForward_5sec)
+            self.SkipFortoolButton_9.setShortcut(QKeySequence('Right'))
+            
+            self.toolButton_11.clicked.connect(self.SkipBackward_10sec)
+            self.toolButton_11.setShortcut(QKeySequence('Ctrl+Left'))
+            
+            self.toolButton_12.clicked.connect(self.SkipForward_10sec)
+            self.toolButton_12.setShortcut(QKeySequence('Ctrl+Right'))
+            
+            self.toolButton_previous1min.clicked.connect(self.SkipBackward_1min)
+            self.toolButton_previous1min.setShortcut(QKeySequence('Ctrl+Shift+Left'))
+            
+            self.toolButton_next1min.clicked.connect(self.SkipForward_1min)
+            self.toolButton_next1min.setShortcut(QKeySequence('Ctrl+Shift+Right'))
+            
+            
             self.toolButton_4.clicked.connect(self.ExtractToolbar)
             self.toolButton_5.clicked.connect(self.close)   
             self.pushButtonCut_2.clicked.connect(self.ExtractCommand)
@@ -171,7 +195,7 @@ class QGisMap(QtWidgets.QWidget, Ui_Form):
 
             self.video_frame.setMouseTracking(True)
             self.video_frame.mousePressEvent = self.getScreenPos
-
+            
             self.LoadGPXVideoFromPrj(self.projectfile)
         else:
             ret = QMessageBox.warning(self, "Warning", 'missing ffmpeg binaries, please download it from https://github.com/sagost/VideoUavTracker/blob/master/FFMPEG/'+versione+' and paste it in /.qgis3/python/plugins/Video_UAV_Tracker/FFMPEG/ ', QMessageBox.Ok)
@@ -210,7 +234,7 @@ class QGisMap(QtWidgets.QWidget, Ui_Form):
         if self.DB != None:
             try:
                 self.DBLayer = QgsVectorLayer(self.DB,self.DB.split('.')[-2].split('/')[-1],'ogr')
-                QgsProject.instance().addMapLayers([self.DBLayer,self.GpsLayer]) 
+                QgsProject.instance().addMapLayers([self.DBLayer,self.GpsLayer])
                 self.AddPointMapTool = AddPointTool(self.Main.iface.mapCanvas(),self.DBLayer,self)
                 self.toolButton_6.clicked.connect(self.AddPointTool)   
                 self.toolButton_6.setEnabled(True)
@@ -528,6 +552,7 @@ class QGisMap(QtWidgets.QWidget, Ui_Form):
                         )
             canvas.setExtent(newExtent)
             canvas.refresh()
+
                   
     def MuteUnmute(self):
         if self.player.mediaStatus() == 6 :
@@ -540,23 +565,30 @@ class QGisMap(QtWidgets.QWidget, Ui_Form):
                 self.muteButton.setIcon(
                     self.style().standardIcon(QStyle.SP_MediaVolumeMuted))   
     
-    def SkipForward(self):
+    def SkipForward_10sec(self):
         position = self.player.position()
-        self.setPositionFrame(position+1000)
+        self.setPositionFrame(position + 10000)
        
-    def SkipBackward(self): 
+    def SkipBackward_10sec(self): 
         position = self.player.position()
-        self.setPositionFrame(position - 1000)
+        self.setPositionFrame(position - 10000)
 
-    def ForwardFrame(self):  
+    def SkipForward_5sec(self):  
         position = self.player.position()
-        print(position,round((1/self.fps)*1000), position+round((1/self.fps)*1000)  )
-        self.setPositionFrame(position+round((1/self.fps)*1000))
+        self.setPositionFrame(position+5000)
 
-    def BackwardFrame(self):
+    def SkipBackward_5sec(self):
         position = self.player.position()
-        self.setPositionFrame(position - round((1/self.fps)*1000))
+        self.setPositionFrame(position - 5000)
      
+    def SkipForward_1min(self):
+        position = self.player.position()
+        self.player.setPosition(position+60000)
+    
+    def SkipBackward_1min(self):
+        position = self.player.position()
+        self.player.setPosition(position-60000)   
+    
     def PlayPause(self):
         if self.player.state() == QMediaPlayer.PlayingState:
             if self.Tridimensional:
@@ -857,9 +889,9 @@ class QGisMap(QtWidgets.QWidget, Ui_Form):
         if self.ExtractA:
             if self.ExtractToB > self.ExtractFromA:
                 canvas = self.Main.iface.mapCanvas()
-                crsSrc = QgsCoordinateReferenceSystem(4326)    # .gpx is in WGS 84
+                crsSrc = QgsCoordinateReferenceSystem(4326)  # .gpx is in WGS 84
                 crsDest = canvas.mapSettings().destinationCrs()
-                xform = QgsCoordinateTransform(crsSrc, crsDest, QgsProject.instance())   
+                xform = QgsCoordinateTransform(crsSrc, crsDest, QgsProject.instance())
                 latitude,longitude = self.Polyline[self.ExtractToB].y(), self.Polyline[self.ExtractToB].x()
                 self.ExtractBVertex = QgsVertexMarker(canvas)
                 self.ExtractBVertex.setCenter(xform.transform(QgsPointXY(longitude, latitude)))
@@ -909,3 +941,11 @@ class QGisMap(QtWidgets.QWidget, Ui_Form):
         wgs84_to_utm_transform = osr.CoordinateTransformation(wgs84_coordinate_system, utm_coordinate_system) # (<from>, <to>)
         return wgs84_to_utm_transform.TransformPoint(lon, lat, 0) # returns easting, northing, altitude 
         
+    def wheelEvent(self, event):
+        mwidth = self.video_frame.frameGeometry().width()
+        mheight = self.video_frame.frameGeometry().height()
+        mleft = self.video_frame.frameGeometry().left()
+        mtop = self.video_frame.frameGeometry().top()
+        mscale = event.angleDelta().y()*3
+    
+        self.video_frame.setGeometry(mleft, mtop, mwidth + mscale, round((mwidth + mscale) / 1.778))
