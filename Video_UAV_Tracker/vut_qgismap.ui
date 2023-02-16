@@ -204,6 +204,13 @@
             </spacer>
            </item>
            <item>
+            <widget class="QToolButton" name="toolButton_previous1min">
+             <property name="text">
+              <string>&lt;&lt;&lt;</string>
+             </property>
+            </widget>
+           </item>
+           <item>
             <widget class="QToolButton" name="toolButton_11">
              <property name="text">
               <string>&lt;&lt;</string>
@@ -275,6 +282,13 @@
               <iconset>
                <normalon>:/VgisIcon/mActionArrowRight.svg</normalon>
               </iconset>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QToolButton" name="toolButton_next1min">
+             <property name="text">
+              <string>&gt;&gt;&gt;</string>
              </property>
             </widget>
            </item>

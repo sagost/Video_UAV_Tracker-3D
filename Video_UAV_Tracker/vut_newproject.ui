@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>980</width>
-    <height>632</height>
+    <width>912</width>
+    <height>458</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -33,6 +33,29 @@
          <property name="styleSheet">
           <string notr="true">background-color: rgb(0, 0, 0);</string>
          </property>
+         <widget class="QScrollArea" name="scrollArea">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>891</width>
+            <height>381</height>
+           </rect>
+          </property>
+          <property name="widgetResizable">
+           <bool>true</bool>
+          </property>
+          <widget class="QWidget" name="scrollAreaWidgetContents">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>889</width>
+             <height>379</height>
+            </rect>
+           </property>
+          </widget>
+         </widget>
         </widget>
        </item>
       </layout>
@@ -107,7 +130,7 @@
      <item row="3" column="9">
       <widget class="QToolButton" name="toolButton_2">
        <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Next second&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Next 10sec&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="text">
         <string>&gt;&gt;</string>
@@ -121,7 +144,7 @@
      <item row="3" column="8">
       <widget class="QToolButton" name="SkipFortoolButton_8">
        <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Next frame&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Next 5sec&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="styleSheet">
         <string notr="true"/>
@@ -138,7 +161,7 @@
      <item row="3" column="7">
       <widget class="QToolButton" name="SkipBacktoolButton_7">
        <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Previous frame&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Previous 5sec&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="styleSheet">
         <string notr="true"/>
@@ -155,7 +178,7 @@
      <item row="3" column="6">
       <widget class="QToolButton" name="toolButton">
        <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Previous second&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Previous 10sec&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="text">
         <string>&lt;&lt;</string>
@@ -190,6 +213,26 @@
        </property>
        <property name="text">
         <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="10">
+      <widget class="QToolButton" name="toolButton_5">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Next 60min&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string>&gt;&gt;&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="5">
+      <widget class="QToolButton" name="toolButton_6">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Previous 60min&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string>&lt;&lt;&lt;</string>
        </property>
       </widget>
      </item>

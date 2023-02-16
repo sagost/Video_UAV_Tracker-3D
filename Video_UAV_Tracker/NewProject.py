@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 '''
 Video Uav Tracker 3D  v 2.1
@@ -23,7 +23,6 @@ ATTENTION: 3D IS NOT TESTED ON WINDOWS PLATFORM
 - Pixel value query need a .npz archive containing one array data for every frame, it must be named as 'VideoFile.npz' and be in the same folder of 'VideoFile.mp4'
 - for 3d options install numpy,panda3d and pypng python3 modules
 - Download all files from https://github.com/sagost/Video_UAV_Tracker-3D/Video_UAV_Tracker/FFMPEG and copy them in your Video_Uav_Tracker/FFMPEG folder
-
 Syncing:
 - Create new project
 - Select video and .gpx track (1 trkpt per second)
@@ -40,8 +39,9 @@ Replay:
 
 from qgis.core import *
 from PyQt5 import QtWidgets
+from PyQt5 import QtCore,QtGui
 from PyQt5.QtCore import  QUrl , Qt , QVariant , QRegExp
-from PyQt5.QtGui import QRegExpValidator
+from PyQt5.QtGui import QRegExpValidator, QKeySequence
 from PyQt5.QtWidgets import  QFileDialog ,  QStyle, QDialog, QMessageBox ,  QTableWidgetItem
 from PyQt5.QtMultimedia import QMediaPlayer,  QMediaContent
 
@@ -59,6 +59,7 @@ SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.
 sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 
 import time
+import datetime
 from geographiclib.geodesic import Geodesic
 from xml.dom.minidom import parse
 from Setup3D import Setup3D
@@ -103,11 +104,28 @@ class NewProject(QtWidgets.QWidget, Ui_NewProject):
         self.replayPlay_pushButton.clicked.connect(self.PlayPause)
         self.muteButton.clicked.connect(self.MuteUnmute)
         self.horizontalSlider.sliderMoved.connect(self.setPosition)
-        self.toolButton.clicked.connect(self.SkipBackward)
-        self.toolButton_2.clicked.connect(self.SkipForward)
-        self.SkipBacktoolButton_7.clicked.connect(self.BackwardFrame)
-        self.SkipFortoolButton_8.clicked.connect(self.ForwardFrame)
+        
+        #CDM-4266
+        self.toolButton_6.clicked.connect(self.SkipBackward_1min)
+        self.toolButton_6.setShortcut(QKeySequence('Ctrl+Shift+Left'))
+        
+        self.toolButton_5.clicked.connect(self.SkipForward_1min)
+        self.toolButton_5.setShortcut(QKeySequence('Ctrl+Shift+Right'))
+        
+        self.toolButton.clicked.connect(self.SkipBackward_10sec)
+        self.toolButton.setShortcut(QKeySequence('Ctrl+Left'))
+        
+        self.toolButton_2.clicked.connect(self.SkipForward_10sec)
+        self.toolButton_2.setShortcut(QKeySequence('Ctrl+Right'))
+        
+        self.SkipBacktoolButton_7.clicked.connect(self.SkipBackward_5sec)
+        self.SkipBacktoolButton_7.setShortcut(QKeySequence('Left'))
+        
+        self.SkipFortoolButton_8.clicked.connect(self.SkipForward_5sec)
+        self.SkipFortoolButton_8.setShortcut(QKeySequence('Right'))
+        
         self.toolButton_4.clicked.connect(self.Setup3DParameterer)
+        
 
         if os.name == 'nt':
             self.toolButton_4.setEnabled(False)
@@ -277,7 +295,7 @@ class NewProject(QtWidgets.QWidget, Ui_NewProject):
                     self.LoadVideo(self.videofile)
                     self.replayPosition_label.setText( "-:- / -:-")
         else:
-            ret = QMessageBox.warning(self, "Warning", 'missing ffprobe binaries, please download it from https://github.com/sagost/Video_UAV_Tracker-3D/tree/master/Video_UAV_Tracker/FFMPEG'+versione+' and paste it in /.qgis3/python/plugins/Video_UAV_Tracker/FFMPEG/ ', QMessageBox.Ok)
+            ret = QMessageBox.warning(self, "Warning", 'missing ffprobe binaries, please download it from  https://github.com/sagost/Video_UAV_Tracker-3D/tree/master/Video_UAV_Tracker/FFMPEG'+versione+' and paste it in /.qgis3/python/plugins/Video_UAV_Tracker/FFMPEG/ ', QMessageBox.Ok)
             self.close()
             
     def ParseGpx(self,GPXfile):
@@ -319,13 +337,13 @@ class NewProject(QtWidgets.QWidget, Ui_NewProject):
                                              
                             except ValueError:
                                 try:
-                                    gpxtime = time.strftime('%Y-%m-%dT%H.%M.%S',time.strptime(x[6:-13],'%Y-%m-%dT%H.%M.%S'))
-                                    dict['Time']= x[6:-13] 
+                                    gpxtime = time.strftime('%Y-%m-%dT%H.%M.%S',time.strptime(x[6:-12],'%Y-%m-%dT%H.%M.%S'))
+                                    dict['Time']= x[6:-12] 
                                  
                                 except ValueError:
                                     try:
-                                        gpxtime = time.strftime('%Y-%m-%dT%H.%M.%S',time.strptime(x[6:-13],'%Y-%m-%dT%H:%M:%S'))
-                                        dict['Time']= x[6:-13]
+                                        gpxtime = time.strftime('%Y-%m-%dT%H.%M.%S',time.strptime(x[6:-12],'%Y-%m-%dT%H:%M:%S'))
+                                        dict['Time']= x[6:-12]
                                     except ValueError:
                                         try:
                                             gpxtime = time.strftime('%Y-%m-%dT%H.%M.%S',
@@ -334,6 +352,9 @@ class NewProject(QtWidgets.QWidget, Ui_NewProject):
                                         except ValueError:
                                             Error = 1
                                             FormatoErrore = str(x)
+                                            
+
+                    
                 elif x.find('<course>')==0:
                     dict['Course'] = float(x[8:-9])
                     self.Course = 1
@@ -351,7 +372,7 @@ class NewProject(QtWidgets.QWidget, Ui_NewProject):
                     Point = [dict['Lat'], dict['Lon'], dict['Ele'], dict['Time'],dict['Course'],dict['Pitch'],dict['Roll']]
                 else:
                     Point = [dict['Lat'],dict['Lon'],dict['Ele'],dict['Time']]
-                self.comboBox.addItem(str(GpxProgressiveNumber) + '-'+ gpxtime )    
+                # self.comboBox.addItem(str(GpxProgressiveNumber) + '-'+ gpxtime )    
                 GPXList.append([GpxProgressiveNumber,Point])
                 GpxProgressiveNumber = GpxProgressiveNumber + 1
                 Timestamp = dict['Time'] 
@@ -359,10 +380,42 @@ class NewProject(QtWidgets.QWidget, Ui_NewProject):
                 Timestamp = dict['Time']
                 
         if Error == 0:
+            print('---Sync_log---')
+            print(len(GPXList))
+            st_date = datetime.datetime.strptime(GPXList[0][1][3],'%Y-%m-%dT%H:%M:%S')
+            second_date = datetime.datetime.strptime(GPXList[1][1][3],'%Y-%m-%dT%H:%M:%S')
+            ed_date = datetime.datetime.strptime(GPXList[-1][1][3],'%Y-%m-%dT%H:%M:%S')
+            total_time_len = ed_date - st_date
+            time_len_btw01 = second_date - st_date
+            print("TimeLength(Total)      : ", total_time_len)
+            print("TimeLength(btw 0, 1)   : ", time_len_btw01, time_len_btw01.seconds)
+            print('---')
+            
+            tmpDate = datetime.datetime.strptime(GPXList[0][1][3],'%Y-%m-%dT%H:%M:%S')
+            tmp0, tmp1, tmp2 = GPXList[0][1][0], GPXList[0][1][1], GPXList[0][1][2]
+            timeDt = datetime.timedelta(0,1)
+            GPXList_dummy = []
+            
+            if time_len_btw01.seconds > 1:
+                for idx in range(time_len_btw01.seconds-2):
+                    tmpDate += timeDt
+                    GPXList_dummy.append([-1, [tmp0, tmp1, tmp2, datetime.datetime.strftime(tmpDate, '%Y-%m-%dT%H:%M:%S')]])
+            
+                GPXList = GPXList_dummy + GPXList
+            
+            
+            
+            for idx in range(len(GPXList)):
+                if GPXList[idx][0] == -1: #if dummy then
+                    self.comboBox.addItem('dummy' + '-'+ GPXList[idx][1][3])
+                else:
+                    self.comboBox.addItem(str(idx) + '-'+ GPXList[idx][1][3])
+                
             self.GPXList = GPXList
         else:
             ret = QMessageBox.warning(self, "Warning", FormatoErrore +'  UNKOWN GPX TIME FORMAT - ABORTED', QMessageBox.Ok)  
-            self.close()
+            self.close()             
+    
         
     def LoadVideo(self,videofile):
         fps = self.getVideoDetails(str(videofile))
@@ -371,7 +424,7 @@ class NewProject(QtWidgets.QWidget, Ui_NewProject):
         url = QUrl.fromLocalFile(str(self.videofile))
         mc = QMediaContent(url)
         self.player.setMedia(mc)
-        self.player.play()
+        #self.player.play()
           
     def setPosition(self, position):
         self.player.setPosition(position*1000)
@@ -428,25 +481,41 @@ class NewProject(QtWidgets.QWidget, Ui_NewProject):
             elif str(l).startswith("height"):
                 self.VideoHeight = str(l).split('=')[1]
             elif str(l).startswith("r_frame_rate"):
-               if str(l).split('=')[1] != '0/0'
+                if str(l).split('=')[1] != '0/0':
                     fps = float(str(l).split('=')[1].split('/')[0] ) / float(str(l).split('=')[1].split('/')[1] )
                     return fps
 
-    def SkipForward(self): 
+    def SkipForward_1min(self): 
         position = self.player.position()
-        self.player.setPosition(position+1000)
+        self.player.setPosition(position+60000)
     
-    def SkipBackward(self): 
+    def SkipBackward_1min(self): 
         position = self.player.position()
-        self.player.setPosition(position-1000)
+        self.player.setPosition(position-60000)    
+
+    def SkipForward_10sec(self): 
+        position = self.player.position()
+        self.player.setPosition(position+10000)
     
-    def ForwardFrame(self):  
+    def SkipBackward_10sec(self): 
         position = self.player.position()
-        self.player.setPosition(position+round(self.fps))
+        self.player.setPosition(position-10000)
+        
+    def SkipForward_5sec(self): 
+        position = self.player.position()
+        self.player.setPosition(position+5000)
     
-    def BackwardFrame(self):
+    def SkipBackward_5sec(self): 
         position = self.player.position()
-        self.player.setPosition(position-round(self.fps))
+        self.player.setPosition(position-5000)
+    
+    # def ForwardFrame(self):  
+    #     position = self.player.position()
+    #     self.player.setPosition(position+round(self.fps))
+    #
+    # def BackwardFrame(self):
+    #     position = self.player.position()
+    #     self.player.setPosition(position-round(self.fps))
 
     def ManageDB(self):
         self.player.pause()
@@ -475,6 +544,19 @@ class NewProject(QtWidgets.QWidget, Ui_NewProject):
     
     def AcceptNewDB(self,DB):
         self.DB = DB
+        
+
+    # def wheelEvent(self, event):
+    #     mwidth = self.video_frame_2.frameGeometry().width()
+    #     mheight = self.video_frame_2.frameGeometry().height()
+    #     mleft = self.video_frame_2.frameGeometry().left()
+    #     mtop = self.video_frame_2.frameGeometry().top()
+    #     mscale = event.angleDelta().y()
+    #
+    #     print(mwidth, mheight, mleft, mtop, mscale)
+    #
+    #     self.video_frame_2.setGeometry(mleft, mtop, mwidth + mscale, round((mwidth + mscale) / 1.778))
+
         
 
 
@@ -754,7 +836,8 @@ class TableManager(QDialog, Ui_Dialog):
     self.provider.addAttributes(qfields)    
     self.provider.addAttributes([QgsField("Lon(WGS84)",  QVariant.String),
           QgsField("Lat(WGS84)", QVariant.String),
-          QgsField('Image link', QVariant.String)])        
+          QgsField('Image link', QVariant.String)])
+
     self.layer.updateExtents()
     self.Main.AcceptNewDB(self.layer)
     self.close()
